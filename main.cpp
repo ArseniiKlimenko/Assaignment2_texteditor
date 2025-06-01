@@ -28,7 +28,7 @@ public:
             getchar();
 
             switch (comand) {
-            case 8:
+            case 0:
                 return;
 
             case 1: {
@@ -167,6 +167,37 @@ public:
                 break;
             }
 
+                case 8: {
+                int line, index, num;
+                std::cout <<"Choose line, index and number of symbols (like: 0 0 1) you want to delete"<<std::endl;
+                if (scanf("%d %d %d", &line, &index, &num) != 3) {
+                    std::cout << "Invalid input, try again" << std::endl;
+                    while (getchar() != '\n');
+                    break;
+                }
+                getchar();
+                if (line < 0 || line >= AmountLines) {
+                    std::cout << "Incorrect line number, try again" << std::endl;
+                    break;
+                }
+                if (index < 0 || index >= (int)(strlen(text[index]))) {
+                    std::cout << "Incorrect index number, try again" << std::endl;
+                    break;
+                }
+                int len = strlen(text[line]);
+                if (index + num > len) {
+                    num = len - index;
+                }
+                for (int i = index; i < len - num; i++) {
+                    text[line][i] = text[line][num + i];
+                }
+                std::cout << "Text deleted successfully." << std::endl;
+                break;
+
+
+
+            }
+
             default:
                 std::cout << "Command is not implemented, try again!" << std::endl;
                 break;
@@ -183,7 +214,8 @@ public:
         std::cout << "5. Print the current text to console" << std::endl;
         std::cout << "6. Insert text by line and symbol index" << std::endl;
         std::cout << "7. Search substring in text" << std::endl;
-        std::cout << "8. Exit" << std::endl;
+        std::cout << "8. Delete text" << std::endl;
+        std::cout << "0. Exit" << std::endl;
     }
 };
 
