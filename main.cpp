@@ -1,14 +1,41 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
+#include <vector>
 
 #define Maxrows 100
 #define MaxLenght_Line 1000
 
+struct State {
+    int AmountLines;
+    char text[Maxrows][MaxLenght_Line];
+};
+
 class TexEditor {
+    private:
     char text[Maxrows][MaxLenght_Line];
     int AmountLines;
     char copiedText[MaxLenght_Line];
+
+    std::vector<State> undoStack;
+    std::vector<State> redoStack;
+
+    void SaveState() {
+        State s;
+        s.AmountLines = AmountLines;
+        for (int i = 0; i < AmountLines; i++) {
+            strcpy(s.text[i], text[i]);
+        }
+        undoStack.push_back(s);
+        redoStack.clear();
+    }
+
+    void RestoreState(const State &s) {
+        AmountLines = s.AmountLines;
+        for (int i = 0; i < AmountLines; i++) {
+            strcpy(text[i], s.text[i]);
+        }
+    }
 
     void deleteText(int line, int index, int num) {
         if (line < 0 || line >= AmountLines) return;
@@ -98,6 +125,7 @@ public:
                         break;
                     }
                     line[strcspn(line, "\n")] = '\0';
+                    SaveState();
                     if ((strlen(text[AmountLines - 1]) + strlen(line)) < MaxLenght_Line) {
                         strcat(text[AmountLines - 1], line);
                         std::cout << "Text added." << std::endl;
@@ -192,6 +220,7 @@ public:
                         std::cout << "Not enough space in the line!" << std::endl;
                         break;
                     }
+                    SaveState();
                     char trans[MaxLenght_Line];
                     strncpy(trans, text[line], index);
                     trans[index] = '\0';
@@ -244,6 +273,7 @@ public:
                         std::cout << "Incorrect index number, try again" << std::endl;
                         break;
                     }
+                    SaveState();
                     deleteText(line, index, num);
                     std::cout << "Text deleted." << std::endl;
                     break;
@@ -269,6 +299,7 @@ public:
                         break;
                     }
                     NewText[strcspn(NewText, "\n")] = '\0';
+                    SaveState();
                     InsertReplacement(line, index, NewText);
                     std::cout << "Text inserted." << std::endl;
                     break;
@@ -309,6 +340,7 @@ public:
                         std::cout << "Incorrect index number, try again" << std::endl;
                         break;
                     }
+                    SaveState();
                     Paste(line, index);
                     std::cout << "Text pasted." << std::endl;
                     break;
@@ -329,8 +361,45 @@ public:
                         break;
                     }
                     Copy(line, index, num);
+                    SaveState();
                     deleteText(line, index, num);
                     std::cout << "Text was cutted" << std::endl;
+                    break;
+                }
+
+                case 13: {
+                    if (undoStack.empty()) {
+                        std::cout << "Nothing to undo" << std::endl;
+                    } else {
+                        State current;
+                        current.AmountLines = AmountLines;
+                        for (int i = 0; i < AmountLines; i++) {
+                            strcpy(current.text[i], text[i]);
+                        }
+                        redoStack.push_back(current);
+                        State prev = undoStack.back();
+                        undoStack.pop_back();
+                        RestoreState(prev);
+                        std::cout << "Undo success." << std::endl;
+                    }
+                    break;
+                }
+
+                case 14: {
+                    if (redoStack.empty()) {
+                        std::cout << "Nothing to redo." << std::endl;
+                    } else {
+                        State current;
+                        current.AmountLines = AmountLines;
+                        for (int i = 0; i < AmountLines; i++) {
+                            strcpy(current.text[i], text[i]);
+                        }
+                        undoStack.push_back(current);
+                        State next = redoStack.back();
+                        redoStack.pop_back();
+                        RestoreState(next);
+                        std::cout << "Redo success." << std::endl;
+                    }
                     break;
                 }
 
@@ -358,6 +427,8 @@ public:
         std::cout << "10. Copy" << std::endl;
         std::cout << "11. Paste" << std::endl;
         std::cout << "12. Cut" << std::endl;
+        std::cout << "13. Undo" << std::endl;
+        std::cout << "14. Redo" << std::endl;
         std::cout << "0. Exit" << std::endl;
     }
 };
