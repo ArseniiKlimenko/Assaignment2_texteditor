@@ -8,8 +8,22 @@
 class TexEditor {
     char text[Maxrows][MaxLenght_Line];
     int AmountLines;
+
+    void deleteText(int line, int index, int num) {
+        if (line < 0 || line >= AmountLines) return;
+        int len = strlen(text[line]);
+        if (index < 0 || index >= len) return;
+        if (index + num > len) {
+            num = len - index;
+        }
+        for (int i = index; i <= len - num; i++) {
+            text[line][i] = text[line][i + num];
+        }
+    }
+
 public:
     TexEditor() {
+
         for (int i = 0; i < Maxrows; i++) {
             text[i][0] = '\0';
         }
@@ -169,7 +183,7 @@ public:
 
                 case 8: {
                 int line, index, num;
-                std::cout <<"Choose line, index and number of symbols (like: 0 0 1) you want to delete"<<std::endl;
+                std::cout << "Choose line, index and number of symbols (like: 0 0 1) you want to delete: "<<std::endl;
                 if (scanf("%d %d %d", &line, &index, &num) != 3) {
                     std::cout << "Invalid input, try again" << std::endl;
                     while (getchar() != '\n');
@@ -184,14 +198,8 @@ public:
                     std::cout << "Incorrect index number, try again" << std::endl;
                     break;
                 }
-                int len = strlen(text[line]);
-                if (index + num > len) {
-                    num = len - index;
-                }
-                for (int i = index; i < len - num; i++) {
-                    text[line][i] = text[line][num + i];
-                }
-                std::cout << "Text deleted successfully." << std::endl;
+                deleteText(line, index, num);
+                std::cout << "Text deleted." << std::endl;
                 break;
 
 
