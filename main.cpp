@@ -42,20 +42,19 @@ class TexEditor {
     }
 
     void Copy(int line, int index, int num) {
-        if (line < 0 || line > AmountLines) return;
+        if (line < 0 || line >= AmountLines) return;
         int len = strlen(text[line]);
         if (index < 0 || index >= len) return;
-        if (index + num > len) {
+        if (index + num > len)
             num = len - index;
-            strncpy(copiedText, text[line] + index, num);
-            copiedText[num] = '\0';
-        }
+        strncpy(copiedText, text[line] + index, num);
+        copiedText[num] = '\0';
     }
 
     void Paste(int line, int index) {
         if (line < 0 || line >= AmountLines) return;
         int len = strlen(text[line]);
-        if (index < 0 || index >= len) return;
+        if (index < 0 || index > len) return;
         char trans[MaxLenght_Line];
         strncpy(trans, text[line], index);
         trans[index] = '\0';
@@ -66,8 +65,6 @@ class TexEditor {
         } else {
             std::cout << "Not enough space for paste" << std::endl;
         }
-
-
     }
 
 public:
@@ -320,7 +317,7 @@ public:
 
                 case 12: {
                     int line, index, num;
-                    std::cout << "Choose text you want to cut(like: 0 0 1 line index number of symbols:  ";
+                    std::cout << "Choose text you want to cut(like: 0 0 1 line index number of symbols):   ";
                     if (scanf("%d %d %d", &line, &index, &num) != 3) {
                         std::cout << "Invalid input, try again" << std::endl;
                         while (getchar() != '\n');
