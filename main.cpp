@@ -21,6 +21,25 @@ class TexEditor {
         }
     }
 
+    void InsertReplacement(int line, int index, const char *NewText) {
+        if (line < 0 || line >= AmountLines) return;
+        int LenText = strlen(NewText);
+        int LenLine = strlen(text[line]);
+        if (index < 0 || index >= LenLine) return;
+        char trans[MaxLenght_Line];
+        strncpy(trans, text[line], index);
+        trans[index] = '\0';
+        strcat(trans, NewText);
+        if (index + LenText < LenLine) {
+            strcat(trans, text[line] + index + LenText);
+        }
+        if (strlen(trans) < MaxLenght_Line) {
+            strcpy(text[line], trans);
+        }else {
+            std::cout << "Not enough space!" << std::endl;
+        }
+    }
+
 public:
     TexEditor() {
 
@@ -202,6 +221,31 @@ public:
                 std::cout << "Text deleted." << std::endl;
                 break;
 
+                case 9: {
+                    int line, index;
+                    std::cout << "Write line and index for replacement(like: 0 1): ";
+                    if (scanf("%d %d", &line, &index) != 2) {
+                        std::cout << "Invalid input, try again" << std::endl;
+                        while (getchar() != '\n');
+                        break;
+                    }
+                    getchar();
+                    if (line < 0 || line >= AmountLines) {
+                        std::cout << "Incorrect line number, try again" << std::endl;
+                        break;
+                    }
+                    char NewText[MaxLenght_Line];
+                    std::cout << "Write text for replace: ";
+                    if (fgets(NewText, sizeof(NewText), stdin) == NULL) {
+                        std::cout << "No text entered." << std::endl;
+                        break;
+                    }
+                    NewText[strcspn(NewText, "\n")] = '\0';
+                    InsertReplacement(line, index, NewText);
+                    std::cout << "Text inserted." << std::endl;
+                    break;
+                }
+
 
 
             }
@@ -223,6 +267,7 @@ public:
         std::cout << "6. Insert text by line and symbol index" << std::endl;
         std::cout << "7. Search substring in text" << std::endl;
         std::cout << "8. Delete text" << std::endl;
+        std::cout << "9. Insert with replacement" << std::endl;
         std::cout << "0. Exit" << std::endl;
     }
 };
