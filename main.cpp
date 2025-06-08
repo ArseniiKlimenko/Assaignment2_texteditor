@@ -442,7 +442,8 @@ public:
                         std::cout << "No text entered." << std::endl;
                         break;
                     }
-                    std::cout << "Enter encrypt key." << std::endl;
+                    input[strcspn(input, "\n")] = '\0';
+                    std::cout << "Enter encrypt key:";
                     int key;
                     if (scanf("%d", &key) != 1) {
                         std::cout << "Invalid key, try again" << std::endl;
@@ -460,6 +461,17 @@ public:
                         std::cout << "No text entered." << std::endl;
                         break;
                     }
+                    input[strcspn(input, "\n")] = '\0';
+                    std::cout << "Enter decrypt key: ";
+                    int key;
+                    if (scanf("%d", &key) != 1) {
+                        std::cout << "Invalid key, try again" << std::endl;
+                        break;
+                    }
+                    getchar();
+                    std::cout << "Decrypted text: " << decrypt(input, key) << std::endl;
+                    break;
+
                 }
 
 
