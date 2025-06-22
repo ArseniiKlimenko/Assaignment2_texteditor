@@ -95,35 +95,6 @@ class TexEditor {
         }
     }
 
-    char* encrypt(char* rawText, int key) {
-        int len = strlen(rawText);
-        for (int i = 0; i < len; i++) {
-            char c = rawText[i];
-            if(isalpha(c)) {
-                if(isupper(c)) {
-                    rawText[i] = char((c - 'A' + key) % 26 + 'A');
-                }else {
-                    rawText[i] = char((c - 'a' + key) % 26 + 'a');
-                }
-            }
-        }
-        return rawText;
-    }
-
-    char* decrypt(char* encryptedText, int key) {
-        int len = strlen(encryptedText);
-        for (int i = 0; i < len; i++) {
-            char c = encryptedText[i];
-            if(isalpha(c)) {
-                if(isupper(c)) {
-                    encryptedText[i] = char((c - 'A' - key + 26) % 26 + 'A');
-                }else {
-                    encryptedText[i] = char((c - 'a' - key +26) % 26 + 'a');
-                }
-            }
-        }
-        return encryptedText;
-    }
 
 public:
     TexEditor() {
@@ -435,45 +406,6 @@ public:
                     break;
                 }
 
-                case 15: {
-                    char input[MaxLenght_Line];
-                    std::cout << "Enter text to encrypt: ";
-                    if (fgets(input, sizeof(input), stdin) == NULL) {
-                        std::cout << "No text entered." << std::endl;
-                        break;
-                    }
-                    input[strcspn(input, "\n")] = '\0';
-                    std::cout << "Enter encrypt key:";
-                    int key;
-                    if (scanf("%d", &key) != 1) {
-                        std::cout << "Invalid key, try again" << std::endl;
-                        break;
-                    }
-                    getchar();
-                    std::cout << "Encrypted text: " << encrypt(input, key) << std::endl;
-                    break;
-                }
-
-                case 16: {
-                    char input[MaxLenght_Line];
-                    std::cout << "Enter text to decrypt: ";
-                    if (fgets(input, sizeof(input), stdin) == NULL) {
-                        std::cout << "No text entered." << std::endl;
-                        break;
-                    }
-                    input[strcspn(input, "\n")] = '\0';
-                    std::cout << "Enter decrypt key: ";
-                    int key;
-                    if (scanf("%d", &key) != 1) {
-                        std::cout << "Invalid key, try again" << std::endl;
-                        break;
-                    }
-                    getchar();
-                    std::cout << "Decrypted text: " << decrypt(input, key) << std::endl;
-                    break;
-
-                }
-
 
 
 
@@ -501,8 +433,6 @@ public:
         std::cout << "12. Cut" << std::endl;
         std::cout << "13. Undo" << std::endl;
         std::cout << "14. Redo" << std::endl;
-        std::cout << "15. Encrypt" << std::endl;
-        std::cout << "16. Decrypt" << std::endl;
         std::cout << "0. Exit" << std::endl;
     }
 };
