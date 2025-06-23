@@ -4,6 +4,8 @@
 
 #include "Line.h"
 
+#include <sstream>
+
 struct TextLine : Line {
     std::string text;
     TextLine(const std::string& t) : text(t) {}
@@ -27,6 +29,42 @@ struct CheckLine : Line {
     void print() const override {
         std::cout << "[ " << (checked ? "x" : " ") << " ] " << item << "\n";
     }
-
 };
+
+struct ContactLine : Line {
+    std::string name, surname, email;
+    ContactLine(const std::string& n, const std::string& s, const std::string& e) : name(n), surname(s), email(e) {}
+    std::string serialize() const override {
+        return "CONTACT: " + name + " " + surname + ", E-mail: " + email;
+    }
+    void print() const override {
+        std::cout << name << " " << surname << ", E-mail: " << email << "\n";
+    }
+};
+
+Line* Line::deserialize(const std::string& data) {
+    if (data.rfind("TEXT:", 0) == 0) {
+       return new TextLine(data.substr(5));
+    }
+    if (data.rfind("CHECK:", 0) == 0) {
+        auto rest = data.substr(6);
+        auto pos  = rest.find(':');
+        bool chk  = (rest.substr(0,pos) == "1");
+        std::string itm = rest.substr(pos+1);
+        return new ChecklistLine(itm, chk);
+    }
+    if (data.rfind("CONTACT:", 0) == 0) {
+        auto rest = data.substr(8);
+        std::istringstream ss(rest);
+        std::string n,s,e;
+        std::getline(ss,n,';');
+        std::getline(ss,s,';');
+        std::getline(ss,e);
+        return new ContactLine(n,s,e);
+
+    }
+
+    return new TextLine(data);
+
+}
 
