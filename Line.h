@@ -50,10 +50,10 @@ struct ContactLine : Line {
     std::string name, surname, email;
     ContactLine(const std::string& n, const std::string& s, const std::string& e) : name(n), surname(s), email(e) {}
     std::string serialize() const override {
-        return "CONTACT: " + name + " " + surname + ", E-mail: " + email;
+        return "CONTACT:" + name + " " + surname + "; " + email;
     }
     void print() const override {
-        std::cout << name << " " << surname << ", E-mail: " << email << "\n";
+        std::cout << "Contact: " << name << " " << surname << ", E-mail: " << email << "\n";
     }
 };
 
@@ -71,13 +71,13 @@ Line* Line::deserialize(const std::string& data) {
     if (data.rfind("CONTACT:", 0) == 0) {
         auto rest = data.substr(8);
         std::istringstream ss(rest);
-        std::string n,s,e;
-        std::getline(ss,n,';');
-        std::getline(ss,s,';');
-        std::getline(ss,e);
-        return new ContactLine(n,s,e);
-
+        std::string n, s, e;
+        std::getline(ss, n, ' ');
+        std::getline(ss, s, ';');
+        std::getline(ss, e);
+        return new ContactLine(n, s, e);
     }
+
 
     return new TextLine(data);
 

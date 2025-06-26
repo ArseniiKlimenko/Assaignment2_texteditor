@@ -13,8 +13,3 @@ add_executable(Assaignment2_texteditor
         Caesarload.h
         dll3.h
 )
-
-add_custom_command(TARGET Assaignment2_texteditor POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_SOURCE_DIR}/caesar.dll"
-        $<TARGET_FILE_DIR:Assaignment2_texteditor>)
